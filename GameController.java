@@ -2,8 +2,10 @@ package controller;
 
 import minesweeper.GamePanel;
 import entity.Player;
+import minesweeper.MainFrame;
 import minesweeper.ScoreBoard;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 
@@ -17,7 +19,11 @@ public class GameController {
     private GamePanel gamePanel;
     private ScoreBoard scoreBoard;
 
-    Scanner sc = new Scanner(System.in );
+    private int numberOfLandmineBoom = 0;
+    private int numberOfLandmineFlag = 0;
+
+
+    Scanner sc = new Scanner(System.in);
     int times = 0;
     int click = 0;
 
@@ -50,13 +56,46 @@ public class GameController {
      * (目前这里没有每个玩家进行n回合的计数机制的，请自行修改完成哦~）
      */
     public void nextTurn() {
-        if (onTurn == p1&&click == times) {
+        JOptionPane jOptionPane = new JOptionPane();
+
+        if (onTurn == p1 && click == times) {
             onTurn = p2;
-        } else if (onTurn == p2&&click==times) {
+        } else if (onTurn == p2 && click == times) {
             onTurn = p1;
         }
+
+
         System.out.println("Now it is " + onTurn.getUserName() + "'s turn.");
-        scoreBoard.update();
+        if (p1.getP1score() != p2.getP2score()) {
+            if (Math.abs(p1.getP1score()) - p2.getP2score() > MainFrame.mineCount - getNumberOfLandmineBoom() - getNumberOfLandmineFlag()) {
+                if (p1.getP1score() > p2.getP2score()) {
+                    String winner = new String(p1.getUserName());
+                    JOptionPane.showMessageDialog(null, "The winner is " + winner, "Game Over", JOptionPane.PLAIN_MESSAGE);
+//P1 win the game
+                } else if (p1.getP1score() < p2.getP2score()) {
+                    String winner = new String(p2.getUserName());
+                    JOptionPane.showMessageDialog(null, "The winner is " + winner, "Game Over", JOptionPane.PLAIN_MESSAGE);
+                }
+//P2 win the game
+            }
+        }
+
+        else if (MainFrame.mineCount == getNumberOfLandmineBoom() + getNumberOfLandmineFlag()) {
+            if (p1.getP1Mistake() < p2.getP2Mistake()) {
+                String winner = new String(p1.getUserName());
+                JOptionPane.showMessageDialog(null, "The winner is " + winner, "Game Over", JOptionPane.PLAIN_MESSAGE);
+//P1 win the game
+            } else if (p1.getP1Mistake() > p2.getP2Mistake()) {
+                String winner = new String(p2.getUserName());
+                JOptionPane.showMessageDialog(null, "The winner is " + winner, "Game Over", JOptionPane.PLAIN_MESSAGE);
+//P2 win the game
+            } else if (p1.getP1Mistake() == p2.getP2Mistake()) {
+                JOptionPane.showMessageDialog(null, "A Dead Heat", "Game Over", JOptionPane.PLAIN_MESSAGE);
+//平局(A Dead Heat)
+            }
+        }
+
+
         //TODO: 在每个回合结束的时候，还需要做什么 (例如...检查游戏是否结束？)
 
     }
@@ -104,7 +143,7 @@ public class GameController {
 
     }
 
-    public void writeDataToFile(String fileName){
+    public void writeDataToFile(String fileName) {
         //todo: write data into file
     }
 
@@ -123,4 +162,21 @@ public class GameController {
     public int getTimes() {
         return times;
     }
+
+    public void addNumberOfLandmineFlag() {
+        numberOfLandmineFlag++;
+    }
+
+    public void addNumberOfLandmineBoom() {
+        numberOfLandmineBoom++;
+    }
+
+    public int getNumberOfLandmineBoom() {
+        return numberOfLandmineBoom;
+    }
+
+    public int getNumberOfLandmineFlag() {
+        return numberOfLandmineFlag;
+    }
+
 }
