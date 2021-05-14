@@ -4,6 +4,7 @@ import components.GridComponent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class GamePanel extends JPanel {
@@ -25,14 +26,15 @@ public class GamePanel extends JPanel {
         this.setLayout(null);
         this.setBackground(Color.WHITE);
         this.setSize(GridComponent.gridSize * yCount, GridComponent.gridSize * xCount);//棋子大小是固定的。。。。。
-
+        //this.setLocation((cn.itcast.util.ScreenUtils.getScreenWidth()-(GridComponent.gridSize * yCount))/2, (cn.itcast.util.ScreenUtils.getScreenHeight()-(GridComponent.gridSize * xCount))/2);
         initialGame(xCount, yCount, mineCount);
 
         repaint();
     }
 
-    public void initialGame(int xCount, int yCount, int mineCount) {
+    public void initialGame(int xCount, int yCount, int mineCount)  {
         mineField = new GridComponent[xCount][yCount];
+
 
         generateChessBoard(xCount, yCount, mineCount);
 
