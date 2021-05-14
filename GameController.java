@@ -44,8 +44,8 @@ public class GameController {
         this.onTurn = p1;
 
 
-        System.out.println("Please enter a number to determine how many times(1-5) a player can click in one turn:");//用来表示一个人可以走多少步
-        times = sc.nextInt();
+//        System.out.println("Please enter a number to determine how many times(1-5) a player can click in one turn:");//用来表示一个人可以走多少步
+//        times = sc.nextInt();
         //TODO: 在初始化游戏的时候，还需要做什么？
     }
 
