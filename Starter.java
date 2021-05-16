@@ -1,6 +1,8 @@
 package components;
 
+import controller.GameController;
 import entity.Player;
+import javafx.scene.image.Image;
 import minesweeper.MainFrame;
 import sun.applet.Main;
 
@@ -10,11 +12,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 public class Starter extends JPanel {
 
     public static Player player1 = new Player();
     public static Player player2 = new Player();
+    public static  MainFrame mainFrame;
 
 //    public Player getPlayer1() {
 //        return player1;
@@ -43,7 +50,8 @@ public class Starter extends JPanel {
     JFrame game = new JFrame("选择难度");
     Box ModePanel = Box.createVerticalBox();//选择模式
     JFrame modePanel = new JFrame("选择模式");
-    final int HEIGHT = 400;
+    JFrame CharacterChooser = new JFrame("请P1选择角色");
+    final int HEIGHT = 450;
     final int WIDTH = 600;
 
 
@@ -83,40 +91,47 @@ public class Starter extends JPanel {
         Game.add(SelfMode);
         //Game.add(Return);
 
+
+        //低级模式
         NewBee.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainFrame.mineCount = 10;
-                MainFrame.xCount = 9;
-                MainFrame.yCount = 9;
+                Data.mineCount = 10;
+                Data.xCount = 9;
+                Data.yCount = 9;
                 SwingUtilities.invokeLater(() -> {
-                    MainFrame mainFrame = new MainFrame();
+                    mainFrame = new MainFrame();
                     mainFrame.setVisible(true);
                 });
             }
         });
+
+        //中级模式
         Pioneer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainFrame.mineCount = 40;
-                MainFrame.xCount = 16;
-                MainFrame.yCount = 16;
+                Data.mineCount = 40;
+                Data.xCount = 16;
+                Data.yCount = 16;
                 SwingUtilities.invokeLater(() -> {
-                    MainFrame mainFrame = new MainFrame();
+                    mainFrame = new MainFrame();
                     mainFrame.setVisible(true);
                 });
             }
         });
+
+
+        //高级模式
         Hell.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Data.mineCount = 99;
+                Data.xCount = 16;
+                Data.yCount = 30;
                 SwingUtilities.invokeLater(() -> {
-                    MainFrame mainFrame = new MainFrame();
+                    mainFrame = new MainFrame();
                     mainFrame.setVisible(true);
                 });
-                MainFrame.mineCount = 99;
-                MainFrame.xCount = 16;
-                MainFrame.yCount = 30;
             }
         });
 
@@ -127,17 +142,78 @@ public class Starter extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Box vBox = Box.createVerticalBox();
+                Box hBox = Box.createHorizontalBox();
                 Players.add(vBox);
                 JLabel p1 = new JLabel("请第一位玩家输入姓名：");
+                p1.setForeground(Color.BLUE);
+
                 JLabel p2 = new JLabel("请第二位玩家输入姓名：");
+                p2.setForeground(Color.RED);
+                JLabel move = new JLabel("请选择每回合步数");
+                JRadioButton c1 = new JRadioButton("1",true);
+                JRadioButton c2 = new JRadioButton("2");
+                JRadioButton c3 = new JRadioButton("3");
+                JRadioButton c4 = new JRadioButton("4");
+                JRadioButton c5 = new JRadioButton("5");
+                ButtonGroup step = new ButtonGroup();
+
+                c1.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameController.times=1;
+                    }
+                });
+                c2.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameController.times=2;
+                    }
+                });
+                c3.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameController.times=3;
+                    }
+                });
+                c4.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameController.times=4;
+                    }
+                });
+                c5.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GameController.times=5;
+                    }
+                });
+
+                step.add(c1);
+                step.add(c2);
+                step.add(c3);
+                step.add(c4);
+                step.add(c5);
+
                 JTextField p1Name = new JTextField(10);
+                p1Name.setForeground(Color.BLUE);
                 JTextField p2Name = new JTextField(10);
+                p2Name.setForeground(Color.RED);
                 JButton ok = new JButton("确定");
                 vBox.add(p1);
                 vBox.add(p1Name);
                 vBox.add(p2);
                 vBox.add(p2Name);
                 vBox.add(Box.createVerticalStrut(20));
+                vBox.add(move);
+                vBox.add(hBox);
+                hBox.add(c1);
+                hBox.add(c2);
+                hBox.add(c3);
+                hBox.add(c4);
+                hBox.add(c5);
+                vBox.add(Box.createVerticalStrut(20));
+
+
                 vBox.add(ok);
 
                 ok.addActionListener(new ActionListener() {
@@ -145,17 +221,58 @@ public class Starter extends JPanel {
                     public void actionPerformed(ActionEvent e) {
                         player1.setUserName(p1Name.getText());
                         player2.setUserName(p2Name.getText());
+                        //CharacterChooser.setVisible(true);
                         game.setVisible(true);
                     }
                 });
-                Players.setBounds((cn.itcast.util.ScreenUtils.getScreenWidth()-500)/2, (cn.itcast.util.ScreenUtils.getScreenHeight()-200)/2, 500, 200);
+                Players.setBounds((cn.itcast.util.ScreenUtils.getScreenWidth()-500)/2, (cn.itcast.util.ScreenUtils.getScreenHeight()-250)/2, 500, 250);
                 Players.setVisible(true);
 
             }
         });
 
 
-        frame.add(vBox);
+        Icon RedWolfHead = new ImageIcon("MineSweeper-Demo/src/Icon/RedWolfHead.png");
+        Icon RedWolf = new ImageIcon("MineSweeper-Demo/src/Icon/RedWolf.png");
+        Icon GrayWolfHead = new ImageIcon("MineSweeper-Demo/src/Icon/GrayWolfHead.png");
+        Icon GrayWolf = new ImageIcon("MineSweeper-Demo/src/Icon/GrayWolf.png");
+        JLabel gwSkill = new JLabel("技能：\n安全的点开下一个方块，\n若是雷,插旗并加一分，\n若无雷显示周边雷数");
+        JLabel rwSkill = new JLabel("技能：\n使下一位玩家的活动时间减少5秒");
+
+
+
+
+        JRadioButton greyWolf = new JRadioButton();
+        greyWolf.setIcon(GrayWolf);
+        JRadioButton redWolf = new JRadioButton();
+        redWolf.setIcon(RedWolf);
+        JComboBox character = new JComboBox();
+        character.add(redWolf);
+        character.add(greyWolf);
+        Box v1Box = Box.createVerticalBox();
+        Box v2Box = Box.createVerticalBox();
+        Box hBox = Box.createHorizontalBox();
+        CharacterChooser.add(hBox);
+        hBox.add(v1Box);
+        hBox.add(v2Box);
+        v1Box.add(greyWolf);
+        v1Box.add(gwSkill);
+        v2Box.add(redWolf);
+        v2Box.add(rwSkill);
+        CharacterChooser.setBounds((cn.itcast.util.ScreenUtils.getScreenWidth()-700)/2, (cn.itcast.util.ScreenUtils.getScreenHeight()-600)/2, 700, 600);
+
+        greyWolf.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                player1.setCharacter(new Character("灰太狼"));
+            }
+        });
+
+
+
+
+
+        frame.add(this.vBox);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -186,7 +303,7 @@ public class Starter extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame self = new JFrame("自定义模式");
-                JLabel mine = new JLabel("请输入雷数： ");
+                JLabel mine = new JLabel("请输入雷数(雷数不多于总格数的一半)： ");
                 JLabel x = new JLabel("请输入行数(在5到20之间)： ");
                 JLabel y =  new JLabel("请输入列数(在5到30之间)： ");
                 JTextField xNum = new JTextField(1);
@@ -217,11 +334,11 @@ public class Starter extends JPanel {
                     public void actionPerformed(ActionEvent e) {
                         try {
                             if(5<=Integer.parseInt(xNum.getText())&&Integer.parseInt(xNum.getText())<=20&&5<=Integer.parseInt(yNum.getText())&&Integer.parseInt(yNum.getText())<=30&&Integer.parseInt(mineNum.getText())>0&&Integer.parseInt(mineNum.getText())<=(Integer.parseInt(xNum.getText())*Integer.parseInt(yNum.getText()))/2){
-                                    MainFrame.mineCount = Integer.parseInt(mineNum.getText());
-                                    MainFrame.xCount = Integer.parseInt(xNum.getText());
-                                    MainFrame.yCount = Integer.parseInt(yNum.getText());
+                                    Data.mineCount = Integer.parseInt(mineNum.getText());
+                                    Data.xCount = Integer.parseInt(xNum.getText());
+                                    Data.yCount = Integer.parseInt(yNum.getText());
                                     SwingUtilities.invokeLater(() -> {
-                                        MainFrame mainFrame = new MainFrame();
+                                        mainFrame = new MainFrame();
                                         mainFrame.setVisible(true);
                                     });
                             }else{
@@ -263,7 +380,46 @@ public class Starter extends JPanel {
         });
 
 
+        Continue.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              Object saving =  readObjectFromFile();
+              MainFrame frame = (MainFrame) saving;
+                SwingUtilities.invokeLater(() -> {
+                    mainFrame = frame;
+                    mainFrame.setVisible(true);
+                });
+            }
+        });
 
+
+
+    }
+
+
+    public static Object readObjectFromFile()
+    {
+        Object temp=null;
+        File file =new File("MineSweeper-Demo/src/Save/test.txt");
+        FileInputStream in;
+        try {
+            in = new FileInputStream(file);
+            ObjectInputStream objIn=new ObjectInputStream(in);
+            temp=objIn.readObject();
+            objIn.close();
+            System.out.println("read object success!");
+        } catch (IOException e) {
+            System.out.println("read object failed");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return temp;
+    }
+
+    public static void main(String[] args) {
+        Starter starter = new Starter();
+        starter.Init();
     }
 }
 
